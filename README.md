@@ -5,24 +5,19 @@ O sistema também enviaa e-mails contendo um relatório das vendas realizadas no
 <br>
 
 ## How to Use
-- É necessário ter um servidor do MySQL executando na máquina (para o desenvolvimento, foi utilizado o MAMP);
-- Configurar o arquivo `.env` com os dados do banco de dados MySQL;<br>
-    Exemplo:  
-    ```
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=8889
-    DB_DATABASE=store_database
-    DB_USERNAME=username
-    DB_PASSWORD=password
-    ```
-- Na pasta do projeto, rodar o comando `composer install`;
-- Após, executar o comando `php artisan serve` para iniciar a aplicação;
-- Criar um database no MySQL (sugestão de nome: "store_database") para podermos rodar as migrations;
-- Executar o comando `php artisan migrate` para criar as tabelas no banco de dados.
+
+- Necessário ter Docker e Docker-Compose instalados na máquina.
+- Executar, na pasta do projeto, o comando `docker-compose up -d` para subir a aplicação.
+  - O backend usará a porta 8000.
+- Rodar o comando `docker exec backend-app php artisan migrate` para inicializar as tabelas do banco de dados dentro do container.
+
+- Caso seja interessante, pode-se rodar os seeds para criar alguns vendedores de exemplo, com o seguinte comando `docker exec backend-app php artisan db:seed SellerSeeder`.
+  - No entanto, os vendedores podem ser criados/gerenciados por meio da aplicação de front citada abaixo.
 <br>
   
-O front desse sistema está em um projeto separado, feito com React, [neste repositório](https://github.com/fabygiacomini/sales-frontend).
+O front desse sistema está em um projeto separado, feito com React, [neste repositório](https://github.com/fabygiacomini/sales-frontend). <br>
+**Basta inicializar o docker de ambas as aplicações (rodando os respectivos docker-composes de cada projeto) para que os dois sistemas se comuniquem.**
+
 
 ### Envio de E-mail
 Para o envio de e-mails disparados pelo sistema, foi utilizado o site [MailTrap](https://mailtrap.io).<br>
