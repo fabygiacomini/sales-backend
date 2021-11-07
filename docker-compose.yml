@@ -1,0 +1,72 @@
+version: "3.5"
+services:
+  backend-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-app
+    tty: true
+    restart: unless-stopped
+#    ports:
+#      - "80:80"
+#      - "443:443"
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+#      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - sales-network
+
+    depends_on:
+      - db
+
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+    - "8000:8000"
+    - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - sales-network
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+    - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=store_database
+    networks:
+      - sales-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+#    links:
+#      - db:db
+    ports:
+      - "8002:80"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - sales-network
+
+volumes:
+  dbdata:
+    driver: local
+
+networks:
+  sales-network:
+    name: sales-network
+#    driver: bridge
